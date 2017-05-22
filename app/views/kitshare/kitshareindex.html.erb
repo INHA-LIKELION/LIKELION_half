@@ -1,0 +1,144 @@
+<style>
+  span{
+    color: Yellow;
+    background-color: #ffff66;
+    border: solid 2px yellow;
+  }
+  textarea{
+    resize:none;
+    margin-bottom: 20px;
+  }
+  .header{
+    margin: 50px 0px 50px 0px;
+  }
+  .do{
+    border: 2px solid yellow;
+    background-color: #ffff66;
+    padding: 15px;
+    width: 320px;
+    height: 300px;
+  }
+  .body{
+    background-color: #f1f1f1;
+    padding:10px 50px 50px 50px;
+  }
+  .todoc{
+    font-size: 18px;
+  }
+  .btn-1{
+    background-color: white;
+    color: sandybrown;
+  }
+  .do_c{
+    margin-top: 10px;
+    width: 350px;
+    height: 200px;
+  }
+  .do1{
+    border: 2px solid skyblue;
+    background-color: lightskyblue;
+    width: 250px;
+  }
+  .footer{
+    padding: 20px;
+  }
+</style>
+
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<div id="fh5co-offcanvass">
+  <a href="#" class="fh5co-offcanvass-close js-fh5co-offcanvass-close">Menu <i class="icon-cross"></i> </a>
+  <h1 class="fh5co-logo"><a class="navbar-brand" href="/">COME TO MA ROOM</a></h1>
+  <ul>
+    <li class="active"><a href="/">HOME</a></li>
+    <li><a href="/about/aboutindex">ABOUT</a></li>
+    <li><a href="/kitshare/kitshareindex">Kit Share</a></li>
+    <li><a href="/toolgroup/toolgroupindex">Group Purchasing</a></li>
+    <li><a href="/users/sign_in">Log in</a></li>
+    <li><a href="/users/sign_out">Log out</a></li>
+  </ul>
+  <h3 class="fh5co-lead">Connect with us</h3>
+  <p class="fh5co-social-icons">
+    <a href="#"><i class="icon-twitter"></i></a>
+    <a href="#"><i class="icon-facebook"></i></a>
+    <a href="#"><i class="icon-instagram"></i></a>
+    <a href="#"><i class="icon-dribbble"></i></a>
+    <a href="#"><i class="icon-youtube"></i></a>
+  </p>
+</div>
+<header id="fh5co-header" role="banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <a href="#" class="fh5co-menu-btn js-fh5co-menu-btn">Menu <i class="icon-menu"></i></a>
+        <a class="navbar-brand" href="/">SHARE YOUR<br>DREAM</a>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- END .header -->
+<div class = 'container'>
+  <div class="header">
+    <h1><span>ab</span> KIT SHARE</h1>
+    <h4>방꾸미기 키트를 쉐어하세요
+      페인트, 붓, 비닐, 벽지등을 KIT SHARE 통해 쉐어 할 수 있습니다 </h4>
+  </div>
+  <div class="body">
+    <h2>kit share</h2>
+    <form action = "/kitshare/create" method= "post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Item Name</label>
+        <input type="text" class="form-control" id="title" name = "title" placeholder="name">
+      </div>
+      <div class="form-group">
+        <textarea name = 'content' id = 'content' class = 'form-control' rows="6"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputFile">POST PHOTO</label>
+        <input type="file" name="img" id="img">
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+  <h2>KIT 목록 및 공유하기</h2>
+
+  <!-- show kit list -->
+  <% @kitshares.each do |kitshare| %>
+      <div class = 'col-md-4'>
+        <!-- 글쓴이와 현재 접속자가 일치해야만 수정, 삭제가 가능 -->
+        <% if kitshare.user == current_user %>
+          <a class="btn" href = '/kitshare/update/<%=kitshare.id%>'>UP</a>
+          <a class="btn" href = '/kitshare/destroy/<%=kitshare.id%>'>DEL</a>
+        <% end %>
+        <div class="do">
+          <h4><%=kitshare.title%></h4>
+          <p class="todoc"><%=kitshare.content%></p>
+          <img src="<%= kitshare.img_url %>" width="280px" height="160px">
+        </div>
+        <div class="do_c">
+          <form class="form-inline" action = "/kitshare/<%=kitshare.id%>/comment_create" method= "get" enctype="multipart/form-data">
+            <label class="sr-only" for="exampleInputEmail3">REPLY</label>
+            <input type="text" class="form-control" id="content" name="content" placeholder="reply">
+            <button type="submit" class="btn btn-default">ENTER</button>
+          </form>
+          <hr>
+          <div class="do1">
+            <!-- show comments -->
+            <% kitshare.kitsharecomments.each do |c| %>
+                <b><%= c.content%> </b>
+                <% if c.user == current_user %>
+                  <a class="btn" href = '/kitshare/<%= kitshare.id %>/kitsharecomment/<%= c.id %>/comment_destroy/'>DEL</a>
+                <% end %>
+                <br>
+            <% end %>
+          </div>
+          <hr>
+        </div>
+      </div>
+  <% end %>
+
+</div>
+<!-- paging -->
+<div class="container"><%= paginate @kitshares %></div>

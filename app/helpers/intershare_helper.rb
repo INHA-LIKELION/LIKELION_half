@@ -1,0 +1,2 @@
+module IntershareHelper
+end

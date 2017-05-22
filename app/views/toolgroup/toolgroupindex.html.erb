@@ -1,0 +1,143 @@
+<style>
+  span{
+    color: Yellow;
+    background-color: #ffff66;
+    border: solid 2px yellow;
+  }
+  textarea{
+    resize:none;
+    margin-bottom: 20px;
+  }
+  .header{
+    margin: 50px 0px 50px 0px;
+  }
+  .do{
+    border: 2px solid yellow;
+    background-color: #ffff66;
+    padding: 15px;
+    width: 320px;
+    height: 300px;
+  }
+  .body{
+    background-color: #f1f1f1;
+    padding:10px 50px 50px 50px;
+  }
+  .todoc{
+    font-size: 18px;
+  }
+  .btn-1{
+    background-color: white;
+    color: sandybrown;
+  }
+  .do_c{
+    margin-top: 10px;
+    width: 350px;
+    height: 200px;
+  }
+  .do1{
+    border: 2px solid skyblue;
+    background-color: lightskyblue;
+    width: 250px;
+  }
+  .footer{
+    padding: 20px;
+  }
+
+</style>
+
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+
+<div id="fh5co-offcanvass">
+  <a href="#" class="fh5co-offcanvass-close js-fh5co-offcanvass-close">Menu <i class="icon-cross"></i> </a>
+  <h1 class="fh5co-logo"><a class="navbar-brand" href="/">COME TO MA ROOM</a></h1>
+  <ul>
+    <li class="active"><a href="/">HOME</a></li>
+    <li><a href="/about/aboutindex">ABOUT</a></li>
+    <li><a href="/kitshare/kitshareindex">Kit Share</a></li>
+    <li><a href="/toolgroup/toolgroupindex">Group Purchasing</a></li>
+    <li><a href="/users/sign_in">Log in</a></li>
+    <li><a href="/users/sign_out">Log out</a></li>
+  </ul>
+  <h3 class="fh5co-lead">Connect with us</h3>
+  <p class="fh5co-social-icons">
+    <a href="#"><i class="icon-twitter"></i></a>
+    <a href="#"><i class="icon-facebook"></i></a>
+    <a href="#"><i class="icon-instagram"></i></a>
+    <a href="#"><i class="icon-dribbble"></i></a>
+    <a href="#"><i class="icon-youtube"></i></a>
+  </p>
+</div>
+<header id="fh5co-header" role="banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <a href="#" class="fh5co-menu-btn js-fh5co-menu-btn">Menu <i class="icon-menu"></i></a>
+        <a class="navbar-brand" href="/">SHARE YOUR<br>DREAM</a>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- END .header -->
+
+<div class = 'container'>
+  <div class="header">
+    <h1><span>ab</span>Group Purchasing</h1>
+  </div>
+  <div class="body">
+    <h2>Group Purchasing</h2>
+    <h4>소규모 벽지, 페인트, 도구 등을 공동 구매하는 곳입니다.</h4>
+    <form action = "/toolgroup/create" method= "post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Tool Name</label>
+        <input type="text" class="form-control" id="title" name = "title" placeholder="name">
+      </div>
+      <div class="form-group">
+        <label for="content">Tool Content</label>
+        <textarea name = 'content' id = 'content' class = 'form-control' rows="6"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputFile">POST PHOTO</label>
+        <input type="file" name="img" id="img">
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+  <h2>Group Purchasing List 공동 구매 목록</h2>
+
+  <% @toolgroups.each do |toolgroup| %>
+      <div class = 'col-md-4'>
+        <% if toolgroup.user == current_user %>
+          <a class="btn" href = '/toolgroup/update/<%=toolgroup.id%>'>UP</a>
+          <a class="btn" href = '/toolgroup/destroy/<%=toolgroup.id%>'>DEL</a>
+        <% end %>
+        <div class="do">
+          <h3><%=toolgroup.title%></h3>
+          <p class="todoc"><%=toolgroup.content%></p>
+          <img src="<%= toolgroup.img_url %>" width="280px" height="130px">
+        </div>
+        <div class="do_c">
+          <form class="form-inline" action = "/toolgroup/<%=toolgroup.id%>/comment_create" method= "get" enctype="multipart/form-data">
+            <label class="sr-only" for="exampleInputEmail3">REPLY</label>
+            <input type="text" class="form-control" id="content" name="content" placeholder="reply">
+            <button type="submit" class="btn btn-default">ENTER</button>
+          </form>
+          <hr>
+          <div class="do1">
+            <% toolgroup.toolgroupcomments.each do |c| %>
+                <b><%= c.content%> </b>
+                <% if c.user == current_user %>
+                  <a class="btn" href = '/toolgroup/<%= toolgroup.id %>/toolgroupcomment/<%= c.id %>/comment_destroy/'>DEL</a>
+                <% end %>
+                <br>
+            <% end %>
+          </div>
+          <hr>
+        </div>
+      </div>
+  <% end %>
+</div>
+
+<div class="container"><%= paginate @toolgroups %></div>
